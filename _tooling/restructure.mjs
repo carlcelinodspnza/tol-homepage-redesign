@@ -483,6 +483,36 @@ log.push('polish: closing CTA text set to readable dark green');
 
 
 
+
+// ---------- 9. PORTABLE PATHS ----------
+// The clone emits a few ROOT-absolute asset refs ("/sites/...", "/assets/..."). Those resolve
+// only when the bundle is served from a domain root. Under a GitHub Pages project path
+// (/<repo>/) they 404 - which is exactly what killed the hero video on the first publish:
+//   /sites/.../hero-30s.webm                 -> 404
+//   /<repo>/sites/.../hero-30s.webm          -> 200
+// Rewrite them relative so the bundle works from a root OR a subpath.
+{
+  let vid = 0, other = 0;
+  $('[data-background-video]').each((i, el) => {
+    const raw = $(el).attr('data-background-video') || '';
+    // the value is JSON with escaped slashes: {"url":"\/sites\/..."}
+    const fixed = raw.replace(/"url"\s*:\s*"\\?\/(?!\/)/g, '"url":"');
+    if (fixed !== raw) { $(el).attr('data-background-video', fixed); vid++; }
+  });
+  $('[src], [href]').each((i, el) => {
+    for (const attr of ['src', 'href']) {
+      const v = $(el).attr(attr);
+      if (!v) continue;
+      // only asset directories - leave site navigation links (/store, /rewards) alone
+      if (/^\/(assets|sites|dispenza|_xorigin)\//.test(v)) {
+        $(el).attr(attr, v.replace(/^\//, ''));
+        other++;
+      }
+    }
+  });
+  log.push(`portable: rewrote ${vid} background-video url(s) and ${other} root-absolute asset ref(s) to relative`);
+}
+
 fs.writeFileSync(FILE, $.html(), 'utf8');
 console.log('RESTRUCTURE OK -> ' + FILE);
 log.forEach(l => console.log('  - ' + l));
