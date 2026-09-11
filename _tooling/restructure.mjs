@@ -132,92 +132,98 @@ $('a[href$="/deals"], a[href="/deals"]').each((i, el) => {
 });
 log.push(`deals: View-all CTA added; ${repointed} legacy /deals links re-pointed to the live menu`);
 
-// ---------- 3. SHOP BY CATEGORY — 5 icon tiles ----------
-// Icons: 24x24, fill none, stroke currentColor 1.8, round caps. Deliberately ABSTRACTED —
-// no candy / cookie / lit-cigarette literalism, which is what NV ad rules tend to scrutinise.
-const ico = d => `<svg class="tol-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${d}</svg>`;
-const ICONS = {
-  flower: ico('<path d="M12 21v-9"/><path d="M12 12c0-3-1.9-5.2-4.6-6.1C7.4 8.7 9 11 12 12z"/><path d="M12 12c0-3 1.9-5.2 4.6-6.1C16.6 8.7 15 11 12 12z"/><path d="M12 12c-1.5-2.3-1.5-5.4 0-7.7 1.5 2.3 1.5 5.4 0 7.7z"/>'),
-  preroll: ico('<path d="M4.4 20.5 6.2 18l9.4-11a2.1 2.1 0 0 1 3.2 2.7L9.9 20.2l-3.7 1.3z"/><path d="M6.2 18l3.7 2.2"/><path d="M16.6 6.2l1.7 1.4"/>'),
-  vape: ico('<path d="M10.6 2.6h2.8v2.6h-2.8z"/><rect x="8.4" y="5.2" width="7.2" height="12" rx="2.2"/><path d="M8.4 9.3h7.2"/><path d="M12 17.2v4.2"/>'),
-  extract: ico('<path d="M8.6 3.4h6.8"/><path d="M10 3.4v2.4"/><path d="M14 3.4v2.4"/><rect x="6.2" y="5.8" width="11.6" height="14.4" rx="3"/><path d="M12 10.2c1.7 1.9 2.6 3.3 2.6 4.5a2.6 2.6 0 0 1-5.2 0c0-1.2.9-2.6 2.6-4.5z"/>'),
-  edible: ico('<rect x="4.2" y="6.4" width="15.6" height="13.4" rx="4"/><path d="M12 10.4v5.6"/><path d="M12 12.6c-.9-1.4-2.3-2-3.8-2 0 1.7 1.5 2.7 3.8 2z"/><path d="M12 12.6c.9-1.4 2.3-2 3.8-2 0 1.7-1.5 2.7-3.8 2z"/>')
-};
-
-// Tile 3 has NO verified menu slug. The June crawl shows only edible/extract/flower/pre-roll/
-// specials were ever linked, and the menu host 403s automation, so this cannot be resolved
-// from here. Point it at the FULL menu (verified to exist) rather than guess into a 404.
-// img = the REAL staging product photo recovered from the clone (transparent WebP, VP8X+ALPH).
-// Only the vape cart had no image anywhere on the site or in the June crawl, so that one is
-// generated. Every other tile is the client's own photography.
-const CATS = [
-  { key: 'flower',  title: 'Flower',     href: MENU + '/menu/flower',   cta: 'Shop flower',
-    img: 'Group_75.webp',       alt: 'Cannabis flower bud',   real: true },
-  { key: 'preroll', title: 'Pre-rolls',  href: MENU + '/menu/pre-roll', cta: 'Shop pre-rolls',
-    img: 'Pre_Rolls_1.webp',    alt: 'Cannabis pre-rolls',    real: true },
-  { key: 'vape',    title: 'Vape carts', href: MENU + '/menu',          cta: 'Shop vape carts',
-    img: 'vape_cart.png',       alt: 'Cannabis vape cartridge', real: false,
-    tbd: 'vape-category-slug-unverified' },
-  { key: 'extract', title: 'Extracts',   href: MENU + '/menu/extract',  cta: 'Shop extracts',
-    img: 'concentrate_1.webp',  alt: 'Cannabis extract',      real: true },
-  { key: 'edible',  title: 'Edibles',    href: MENU + '/menu/edible',   cta: 'Shop edibles',
-    img: 'edibles.webp',        alt: 'Cannabis edibles',      real: true }
+// ---------- 3. SHOP BY CATEGORY - full-bleed band of line-art icons ----------
+// Replaces the platform's Swiper cards rail entirely. With five fixed categories there is
+// nothing to page, and dropping the rail also drops both of its traps: the
+// 2*maxSlidesPerView+1 clone shim and the slide-child height:100% rule.
+// Icons are ORIGINAL drawings in the referenced visual language, not the reference site's own
+// asset files. Colours measured: band #527539, lime pill #B5D053, ink #152111
+// (pill-on-band 3.06, ink-on-pill 9.63, white-on-band 5.30). The deals pill green #68954D was
+// rejected here - on this band it measures 1.51:1 and the button barely reads as a shape.
+const CAT_ITEMS = [
+  {"label": "Flower", "href": "https://menu.lasvegas.treeoflifenv.com/menu/flower", "tbd": "", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M39.0 41.5 A7.6 7.6 0 0 1 30.7 50.5 A7.6 7.6 0 0 1 18.5 51.0 A7.6 7.6 0 0 1 9.5 42.7 A7.6 7.6 0 0 1 9.0 30.5 A7.6 7.6 0 0 1 17.3 21.5 A7.6 7.6 0 0 1 29.5 21.0 A7.6 7.6 0 0 1 38.5 29.3 A7.6 7.6 0 0 1 39.0 41.5 Z M50.2 49.7 A6.2 6.2 0 0 1 40.3 50.9 A6.2 6.2 0 0 1 33.2 43.9 A6.2 6.2 0 0 1 34.2 34.0 A6.2 6.2 0 0 1 42.6 28.6 A6.2 6.2 0 0 1 52.1 31.8 A6.2 6.2 0 0 1 55.4 41.2 A6.2 6.2 0 0 1 50.2 49.7 Z M34 21 L49 7 M43 12 q5 -4 10 -3.5 M21 31 v4.5 M18.8 33.2 h4.5 M30 45 v3.6 M28.2 46.8 h3.6 M45 35 v3.2 M43.4 36.6 h3.2\"/></svg>"},
+  {"label": "Pre-rolls", "href": "https://menu.lasvegas.treeoflifenv.com/menu/pre-roll", "tbd": "", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M6.5 47.5 L43.5 25.5 a4.4 4.4 0 0 1 4.5 7.6 L11 55.1 a4.4 4.4 0 0 1 -4.5 -7.6 Z M40 27.6 l4.5 7.6 M34.6 30.8 l4.5 7.6 M7.6 47 q-2.4 3.4 0 7 M10.5 28.5 L47.5 6.5 a4.4 4.4 0 0 1 4.5 7.6 L15 36.1 a4.4 4.4 0 0 1 -4.5 -7.6 Z M44 8.6 l4.5 7.6 M38.6 11.8 l4.5 7.6 M11.6 28 q-2.4 3.4 0 7\"/></svg>"},
+  {"label": "Vape carts", "href": "https://menu.lasvegas.treeoflifenv.com/menu", "tbd": " data-tol-tbd=\"vape-category-slug-unverified\"", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M20.5 18 h11 a2 2 0 0 1 2 2 v31 a5.5 5.5 0 0 1 -5.5 5.5 h-4 a5.5 5.5 0 0 1 -5.5 -5.5 v-31 a2 2 0 0 1 2 -2 Z M23 6 h6 a2 2 0 0 1 2 2 v10 h-10 v-10 a2 2 0 0 1 2 -2 Z M19.5 30 h13.5 M19.5 44 h13.5 M41 24 h9.5 a2 2 0 0 1 2 2 v25 a5 5 0 0 1 -5 5 h-3.5 a5 5 0 0 1 -5 -5 v-25 a2 2 0 0 1 2 -2 Z M43 13 h5.5 a2 2 0 0 1 2 2 v9 h-9.5 v-9 a2 2 0 0 1 2 -2 Z M39 34 h13.5\"/></svg>"},
+  {"label": "Extracts", "href": "https://menu.lasvegas.treeoflifenv.com/menu/extract", "tbd": "", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M28.5 12 L45.5 18.2 a3.2 3.2 0 0 1 1.9 4.1 L40.6 42 a8.5 8.5 0 0 1 -10.9 5.1 l-6 -2.2 a8.5 8.5 0 0 1 -5.1 -10.9 l7 -19.3 a3.2 3.2 0 0 1 3.5 -2.1 Z M31.2 3.6 L38.5 6.3 a2.3 2.3 0 0 1 1.4 3 l-1.6 4.3 -11.4 -4.2 1.6 -4.3 a2.3 2.3 0 0 1 2.7 -1.5 Z M24.6 25 L42.5 31.5 M8 53 q9 -6.5 19 -4 q8.5 2.1 16.5 .4 q5.5 -1.1 9 -3.9 M13.5 57.5 q9.5 -3.6 19 -.6 q6.4 2 12 .6 M7 47.5 a1.4 1.4 0 1 0 .1 0 Z M55 42.5 a1.4 1.4 0 1 0 .1 0 Z\"/></svg>"},
+  {"label": "Edibles", "href": "https://menu.lasvegas.treeoflifenv.com/menu/edible", "tbd": "", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M30.0 25.0 Q23.7 20.0 14.3 21.5 Q22.2 26.9 30.0 25.0 M30.0 25.0 Q26.0 16.7 15.6 13.6 Q21.0 23.0 30.0 25.0 M30.0 25.0 Q30.0 14.6 21.0 6.4 Q21.8 18.6 30.0 25.0 M30.0 25.0 Q35.1 14.7 30.0 2.0 Q24.9 14.7 30.0 25.0 M30.0 25.0 Q38.2 18.6 39.0 6.4 Q30.0 14.6 30.0 25.0 M30.0 25.0 Q39.0 23.0 44.4 13.6 Q34.0 16.7 30.0 25.0 M30.0 25.0 Q37.8 26.9 45.7 21.5 Q36.3 20.0 30.0 25.0 M30 25 v7 M19 37 h21 a2.6 2.6 0 0 1 2.6 2.6 v11 a2.6 2.6 0 0 1 -2.6 2.6 h-21 a2.6 2.6 0 0 1 -2.6 -2.6 v-11 a2.6 2.6 0 0 1 2.6 -2.6 Z M22 37 L26.5 31.6 h21 a2.6 2.6 0 0 1 2.6 2.6 v11 a2.6 2.6 0 0 1 -2.6 2.6 h-4.5 M42.6 37 L47.5 31.6 M23 43.5 h9 M11.5 54 a1.4 1.4 0 1 0 .1 0 Z M8 48.5 a1.2 1.2 0 1 0 .1 0 Z\"/></svg>"}
 ];
-
-// reviews rail: with the loop on, the three visible cards drift mid-slide and get sliced
-// by the gutter. Turn it off so they sit flush, exactly like the category tiles.
-$('#iujbg [data-carousel-options]').each((i, el) => {
-  const raw = $(el).attr('data-carousel-options');
-  try {
-    const cfg = JSON.parse(raw);
-    cfg.loop = false;
-    if (cfg.breakpoints) for (const k of Object.keys(cfg.breakpoints)) cfg.breakpoints[k].loop = false;
-    $(el).attr('data-carousel-options', JSON.stringify(cfg));
-  } catch (e) { /* leave as-is */ }
-});
-log.push('reviews: carousel loop disabled so the visible cards sit flush on the gutter');
-
-const cardsHost = $('#imski').find('.sg-card-items').first();
-if (!cardsHost.length) { console.error('HALT category card container not found'); process.exit(2); }
-const oldCards = cardsHost.children('.sgb-component-card').length;
-cardsHost.children('.sgb-component-card').remove();
-for (const c of CATS) {
-  cardsHost.append(
-    `<div class="sgb-component sgb-component-card tol-cat-card"${c.tbd ? ` data-tol-tbd="${c.tbd}"` : ''}>` +
-      `<div class="inner style_1">` +
-        `<a href="${c.href}" class="p" aria-label="${c.title}"></a>` +
-        `<div class="thumbnail tol-cat-thumb">` +
-          (c.img
-            ? `<img src="assets/in-pages/${c.img}" alt="${c.alt}" loading="lazy" decoding="async"`
-              + ` data-tol-generated="${c.real ? 'false' : 'true'}">`
-            : ICONS[c.key]) +
-        `</div>` +
-        `<div class="info">` +
-          `<div class="title">${c.title}</div>` +
-          `<div class="ctas"><a href="${c.href}" class="btn btn-secondary" aria-label="${c.cta}">${c.cta}</a></div>` +
-        `</div>` +
-      `</div>` +
-    `</div>`
-  );
+{
+  const sec = $('#imski');
+  sec.find('.sgb-component-cards').remove();          // the old cards carousel
+  const items = CAT_ITEMS.map(c =>
+    `<a class="tol-cat-item" href="${c.href}"${c.tbd} aria-label="Shop ${c.label.toLowerCase()}">`
+    + c.svg + `<span class="tol-cat-label">${c.label}</span></a>`).join('');
+  sec.append(
+    `<div class="tol-cat-band" data-tol-added="category-icon-band">`
+    + `<div class="tol-cat-row">${items}</div>`
+    + `<div class="tol-cat-cta"><a class="tol-cat-viewall" href="${MENU}/menu" `
+    + `aria-label="View all categories">View all</a></div></div>`);
 }
-cardsHost.attr('style', '--items-per-slide:5');
-const cfgRaw = cardsHost.attr('data-carousel-options');
-if (cfgRaw) {
-  try {
-    const cfg = JSON.parse(cfgRaw);
-    // 5 tiles in 5 slots: loop cloning only produces visible duplicate tiles (two "Flower"
-    // side by side). This is the opposite call from the deals rail, and correct here because
-    // item count equals slot count.
-    const bump = o => { if (!o) return; if (o.slidesPerView >= 4) o.slidesPerView = 5; o.loop = false; };
-    bump(cfg); if (cfg.breakpoints) for (const k of Object.keys(cfg.breakpoints)) bump(cfg.breakpoints[k]);
-    cardsHost.attr('data-carousel-options', JSON.stringify(cfg));
-  } catch { log.push('categories: WARN carousel config unparsed, left as-is'); }
+log.push(`categories: rail replaced by a ${CAT_ITEMS.length}-icon band + one View-all pill (no carousel)`);
+
+$('body').append(`
+<style id="tol-cat-band">
+/* ============================================================================
+   SHOP BY CATEGORY -> full-bleed band of line-art icons (no carousel).
+   band #527539 / lime pill #B5D053 / ink #152111, all measured from the references.
+   ========================================================================= */
+#imski{overflow:hidden}
+#imski .tol-cat-band{
+  background:#527539;
+  /* full-bleed out of the section's own container without causing h-overflow */
+  width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw);
+  padding:52px 24px 46px;
 }
-log.push(`categories: ${oldCards} photo cards -> ${CATS.length} icon tiles (same card DOM, img swapped for inline svg)`);
-log.push('categories: Concentrates relabelled Extracts to match its own /menu/extract URL');
-log.push('categories: vape tile -> /menu (full menu) + data-tol-tbd marker; NOT a guessed slug');
-log.push('categories: loop disabled (5 tiles in 5 slots) + style_1 rotation/padding overridden');
-log.push('categories: 4 REAL staging product photos restored (Group_75, Pre_Rolls_1, concentrate_1, edibles); vape generated');
+#imski .tol-cat-row{
+  max-width:1180px; margin:0 auto;
+  display:flex; align-items:flex-start; justify-content:center;
+  gap:18px; flex-wrap:wrap;
+}
+#imski .tol-cat-item{
+  flex:1 1 0; min-width:128px; max-width:210px;
+  display:flex; flex-direction:column; align-items:center; gap:16px;
+  padding:10px 6px; border-radius:14px;
+  text-decoration:none; color:#fff;
+  transition:transform .16s ease, background-color .16s ease;
+}
+#imski .tol-cat-item:hover,
+#imski .tol-cat-item:focus-visible{background:rgba(255,255,255,.10); transform:translateY(-3px)}
+#imski .tol-cat-ico{
+  width:88px; height:88px; display:block;
+  color:#fff;                      /* stroke is currentColor */
+  vector-effect:non-scaling-stroke;
+}
+#imski .tol-cat-label{
+  font-size:17px; font-weight:700; line-height:1.25; color:#fff;
+  text-align:center; text-shadow:none !important; letter-spacing:.01em;
+}
+#imski .tol-cat-cta{text-align:center; margin-top:38px}
+#imski .tol-cat-viewall{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:44px; padding:11px 34px;
+  background:#b5d053; color:#152111;
+  font-size:16px; font-weight:700; line-height:1.2;
+  text-decoration:none; text-shadow:none; border-radius:999px; border:0;
+  transition:background .15s ease;
+}
+#imski .tol-cat-viewall:hover,
+#imski .tol-cat-viewall:focus-visible{background:#c3dc6b; color:#152111}
+
+@media (max-width:900px){
+  #imski .tol-cat-row{gap:10px}
+  #imski .tol-cat-ico{width:72px; height:72px}
+  #imski .tol-cat-label{font-size:15px}
+}
+@media (max-width:560px){
+  #imski .tol-cat-band{padding:38px 16px 34px}
+  #imski .tol-cat-row{gap:8px}
+  #imski .tol-cat-item{flex:0 0 calc(33.333% - 8px); min-width:0}
+  #imski .tol-cat-ico{width:60px; height:60px}
+  #imski .tol-cat-label{font-size:14px}
+}
+</style>
+`);
+log.push('categories: band CSS (tol-cat-band) injected');
 
 // ---------- 4. APP SECTION — ships complete with zero client assets ----------
 const appSection = `
