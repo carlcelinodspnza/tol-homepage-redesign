@@ -249,7 +249,7 @@ log.push('categories: band CSS (tol-cat-band) injected');
 {
   const img = $('#ir16v img').first();
   if (img.length) {
-    const ALT = 'The Tree of Life homepage open on a phone held in one hand';
+    const ALT = 'A phone held in one hand showing the Tree of Life rewards offer: earn 250 points when you sign up, with a sign-up QR code and the Bud, VIP, Diamond and Elite points tiers';
     img.attr('data-src', 'assets/in-pages/rewards_app_phone_mockup.webp')
        .removeAttr('srcset').removeAttr('sizes')
        .removeAttr('data-img-fallback').removeAttr('onerror')
