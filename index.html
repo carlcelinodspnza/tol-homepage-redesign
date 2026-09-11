@@ -616,22 +616,41 @@ footer#masterfoot section#copyrightinfo.copyright{ background-color:#1e3032 !imp
 </style>
 
 <style id="tol-rewards-bleed">
-/* The rewards image is a hand whose arm runs off the bottom-right of the artwork. Inside the
-   centred .container it stopped short of the viewport and read as a floating cut-out, so the
-   image cell is pulled out to the right edge of the screen and the arm runs off it.
+/* The rewards artwork is a diagonal composition: phone upper-left, arm exiting bottom-right.
+   Sized to fit its cell it left white on two sides - the arm stops around 60% across at
+   mid-height, and the image box bottom sat 75px above the next section.
 
-   calc(50% - 50vw): the 50% resolves against the row's width, so this equals
-   -(viewport - container)/2 - exactly the gutter between the container edge and the screen edge.
-   Only from 992px up; below that the layout is stacked and a bleed would just crop the phone. */
+   So the image is taken out of flow and anchored to the SECTION's bottom-right corner, where
+   the artwork's own corner is, and scaled past the cell. The section is position:relative and
+   overflow:clip, so the growth bleeds to the screen edge and is cut exactly at the section
+   boundary rather than running into the next one. The cell keeps a min-height because an
+   absolutely positioned image contributes no height and the section would otherwise collapse
+   to the text column. Desktop only - below 992px the layout stacks and this would crop the phone. */
 @media (min-width:992px){
-  /* the cell also carries 25px of its own padding, which held the artwork 25px short of
-     the screen edge even after the negative margin landed correctly */
-  #ir16v #i7sp5{ margin-right:calc(50% - 50vw) !important; padding-right:0 !important; }
-  #ir16v #ilkzg{ width:100% !important; max-width:none !important; }
-  #ir16v #ilkzg img{ width:100% !important; max-width:none !important; height:auto !important; }
+  #ir16v{ position:relative; overflow:clip; }
+  /* The platform sets position:relative on the container, row AND cell, so right:0/bottom:0
+     anchored to the CELL (right edge 1417, bottom 897) instead of the section - 23px short of
+     the screen and 50px short of the section end. Neutralising them makes the section the
+     containing block, and an absolutely positioned box resolves against its PADDING box, which
+     is exactly the section's visible edge. */
+  #ir16v #ip9e6, #ir16v #ikswq, #ir16v #i7sp5{ position:static !important; }
+  #ir16v #i7sp5{
+    min-height:800px;            /* the image is out of flow, so this carries the section height
+                                    and keeps the artwork from being clipped at the top */
+    padding:0 !important;
+    margin-right:0 !important;   /* the bleed is now the absolute right:0, not a negative margin */
+  }
+  /* Sized so the artwork's own bottom-right corner - where the arm exits - lands on the
+     section's bottom-right corner, without the phone reaching across into the copy. At 62vw the
+     phone overran the paragraph and its top was clipped; the text column is also narrowed so the
+     two columns stop competing for the same 200px. */
+  #ir16v #ilkzg{
+    position:absolute; right:0; bottom:0; margin:0;
+    width:min(56vw, 820px); max-width:none;
+  }
+  #ir16v #i68ek{ max-width:620px; }
+  #ir16v #ilkzg img{ width:100% !important; max-width:none !important; height:auto !important; display:block; }
 }
-/* the section spans the viewport, so this cannot clip the bleed - it only stops the negative
-   margin from becoming a horizontal scrollbar if a browser rounds the calc up a pixel */
 #ir16v{ overflow-x:clip; }
 </style>
 </body></html>
