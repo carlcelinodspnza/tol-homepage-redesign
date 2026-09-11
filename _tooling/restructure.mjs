@@ -240,6 +240,26 @@ $('body').append(`
 `);
 log.push('categories: band CSS (tol-cat-band) injected');
 
+// ---------- 3b. POINTS & REWARDS: real phone mockup ----------
+// The stock two-phone render is replaced by a hand-held phone whose screen carries an actual
+// capture of THIS site's mobile view, composited by _tooling/make-rewards-phone.py (that script
+// documents how the screen quad is found and why the mask has to be the filled largest
+// component rather than the quad). The original alt was empty, which for the section's only
+// image left screen-reader users with nothing.
+{
+  const img = $('#ir16v img').first();
+  if (img.length) {
+    const ALT = 'The Tree of Life homepage open on a phone held in one hand';
+    img.attr('data-src', 'assets/in-pages/rewards_app_phone_mockup.webp')
+       .removeAttr('srcset').removeAttr('sizes')
+       .removeAttr('data-img-fallback').removeAttr('onerror')
+       .attr('src', 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjEzMzQiPjwvc3ZnPg==')
+       .attr('alt', ALT).attr('width', '1200').attr('height', '1334')
+       .attr('style', 'aspect-ratio:1200/1334;');
+    log.push('rewards: phone mockup swapped in (site mobile view on screen) + real alt text');
+  }
+}
+
 // ---------- 4. APP SECTION — ships complete with zero client assets ----------
 const appSection = `
 <section class="sgb-component sgb-component-section tol-app" id="tol-app" data-tol-added="app-section" data-tol-slot="app-phone-bg">
