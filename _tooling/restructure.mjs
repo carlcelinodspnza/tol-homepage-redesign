@@ -141,7 +141,7 @@ log.push(`deals: View-all CTA added; ${repointed} legacy /deals links re-pointed
 // (pill-on-band 3.06, ink-on-pill 9.63, white-on-band 5.30). The deals pill green #68954D was
 // rejected here - on this band it measures 1.51:1 and the button barely reads as a shape.
 const CAT_ITEMS = [
-  {"label": "Flower", "href": "https://menu.lasvegas.treeoflifenv.com/menu/flower", "tbd": "", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M39.0 41.5 A7.6 7.6 0 0 1 30.7 50.5 A7.6 7.6 0 0 1 18.5 51.0 A7.6 7.6 0 0 1 9.5 42.7 A7.6 7.6 0 0 1 9.0 30.5 A7.6 7.6 0 0 1 17.3 21.5 A7.6 7.6 0 0 1 29.5 21.0 A7.6 7.6 0 0 1 38.5 29.3 A7.6 7.6 0 0 1 39.0 41.5 Z M50.2 49.7 A6.2 6.2 0 0 1 40.3 50.9 A6.2 6.2 0 0 1 33.2 43.9 A6.2 6.2 0 0 1 34.2 34.0 A6.2 6.2 0 0 1 42.6 28.6 A6.2 6.2 0 0 1 52.1 31.8 A6.2 6.2 0 0 1 55.4 41.2 A6.2 6.2 0 0 1 50.2 49.7 Z M34 21 L49 7 M43 12 q5 -4 10 -3.5 M21 31 v4.5 M18.8 33.2 h4.5 M30 45 v3.6 M28.2 46.8 h3.6 M45 35 v3.2 M43.4 36.6 h3.2\"/></svg>"},
+  {"label": "Flower", "href": "https://menu.lasvegas.treeoflifenv.com/menu/flower", "tbd": "", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><defs><mask id=\"tolBud\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"64\" height=\"64\"><rect x=\"0\" y=\"0\" width=\"64\" height=\"64\" fill=\"#fff\"/><path d=\"M39.0 41.5 A7.6 7.6 0 0 1 30.7 50.5 A7.6 7.6 0 0 1 18.5 51.0 A7.6 7.6 0 0 1 9.5 42.7 A7.6 7.6 0 0 1 9.0 30.5 A7.6 7.6 0 0 1 17.3 21.5 A7.6 7.6 0 0 1 29.5 21.0 A7.6 7.6 0 0 1 38.5 29.3 A7.6 7.6 0 0 1 39.0 41.5 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"3.4\"/></mask></defs><g mask=\"url(#tolBud)\"><path d=\"M50.2 49.7 A6.2 6.2 0 0 1 40.3 50.9 A6.2 6.2 0 0 1 33.2 43.9 A6.2 6.2 0 0 1 34.2 34.0 A6.2 6.2 0 0 1 42.6 28.6 A6.2 6.2 0 0 1 52.1 31.8 A6.2 6.2 0 0 1 55.4 41.2 A6.2 6.2 0 0 1 50.2 49.7 Z\"/></g><path d=\"M39.0 41.5 A7.6 7.6 0 0 1 30.7 50.5 A7.6 7.6 0 0 1 18.5 51.0 A7.6 7.6 0 0 1 9.5 42.7 A7.6 7.6 0 0 1 9.0 30.5 A7.6 7.6 0 0 1 17.3 21.5 A7.6 7.6 0 0 1 29.5 21.0 A7.6 7.6 0 0 1 38.5 29.3 A7.6 7.6 0 0 1 39.0 41.5 Z\"/><path d=\"M34 21 L49 7 M43 12 q5 -4 10 -3.5 M21 31 v4.5 M18.8 33.2 h4.5 M30 45 v3.6 M28.2 46.8 h3.6 M47 36 v3.2 M45.4 37.6 h3.2\"/></svg>"},
   {"label": "Pre-rolls", "href": "https://menu.lasvegas.treeoflifenv.com/menu/pre-roll", "tbd": "", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M6.5 47.5 L43.5 25.5 a4.4 4.4 0 0 1 4.5 7.6 L11 55.1 a4.4 4.4 0 0 1 -4.5 -7.6 Z M40 27.6 l4.5 7.6 M34.6 30.8 l4.5 7.6 M7.6 47 q-2.4 3.4 0 7 M10.5 28.5 L47.5 6.5 a4.4 4.4 0 0 1 4.5 7.6 L15 36.1 a4.4 4.4 0 0 1 -4.5 -7.6 Z M44 8.6 l4.5 7.6 M38.6 11.8 l4.5 7.6 M11.6 28 q-2.4 3.4 0 7\"/></svg>"},
   {"label": "Vape carts", "href": "https://menu.lasvegas.treeoflifenv.com/menu", "tbd": " data-tol-tbd=\"vape-category-slug-unverified\"", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M20.5 18 h11 a2 2 0 0 1 2 2 v31 a5.5 5.5 0 0 1 -5.5 5.5 h-4 a5.5 5.5 0 0 1 -5.5 -5.5 v-31 a2 2 0 0 1 2 -2 Z M23 6 h6 a2 2 0 0 1 2 2 v10 h-10 v-10 a2 2 0 0 1 2 -2 Z M19.5 30 h13.5 M19.5 44 h13.5 M41 24 h9.5 a2 2 0 0 1 2 2 v25 a5 5 0 0 1 -5 5 h-3.5 a5 5 0 0 1 -5 -5 v-25 a2 2 0 0 1 2 -2 Z M43 13 h5.5 a2 2 0 0 1 2 2 v9 h-9.5 v-9 a2 2 0 0 1 2 -2 Z M39 34 h13.5\"/></svg>"},
   {"label": "Extracts", "href": "https://menu.lasvegas.treeoflifenv.com/menu/extract", "tbd": "", "svg": "<svg class=\"tol-cat-ico\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M28.5 12 L45.5 18.2 a3.2 3.2 0 0 1 1.9 4.1 L40.6 42 a8.5 8.5 0 0 1 -10.9 5.1 l-6 -2.2 a8.5 8.5 0 0 1 -5.1 -10.9 l7 -19.3 a3.2 3.2 0 0 1 3.5 -2.1 Z M31.2 3.6 L38.5 6.3 a2.3 2.3 0 0 1 1.4 3 l-1.6 4.3 -11.4 -4.2 1.6 -4.3 a2.3 2.3 0 0 1 2.7 -1.5 Z M24.6 25 L42.5 31.5 M8 53 q9 -6.5 19 -4 q8.5 2.1 16.5 .4 q5.5 -1.1 9 -3.9 M13.5 57.5 q9.5 -3.6 19 -.6 q6.4 2 12 .6 M7 47.5 a1.4 1.4 0 1 0 .1 0 Z M55 42.5 a1.4 1.4 0 1 0 .1 0 Z\"/></svg>"},
@@ -184,10 +184,25 @@ $('body').append(`
   display:flex; flex-direction:column; align-items:center; gap:16px;
   padding:10px 6px; border-radius:14px;
   text-decoration:none; color:#fff;
-  transition:transform .16s ease, background-color .16s ease;
+  }
+/* hover = a wiggle on the icon, not a highlight box. focus-visible still needs a persistent
+   indicator, so keyboard focus keeps a ring (an animation is not a focus indicator). */
+@keyframes tol-cat-wiggle{
+  0%,100%{transform:rotate(0deg)}
+  12%{transform:rotate(-10deg)} 28%{transform:rotate(8deg)}
+  44%{transform:rotate(-6deg)}  60%{transform:rotate(4deg)}
+  76%{transform:rotate(-2deg)}  88%{transform:rotate(1deg)}
 }
-#imski .tol-cat-item:hover,
-#imski .tol-cat-item:focus-visible{background:rgba(255,255,255,.10); transform:translateY(-3px)}
+#imski .tol-cat-item:hover .tol-cat-ico,
+#imski .tol-cat-item:focus-visible .tol-cat-ico{
+  animation:tol-cat-wiggle .62s ease-in-out both;
+  transform-origin:50% 62%;
+}
+#imski .tol-cat-item:focus-visible{outline:2px solid #fff; outline-offset:3px}
+@media (prefers-reduced-motion:reduce){
+  #imski .tol-cat-item:hover .tol-cat-ico,
+  #imski .tol-cat-item:focus-visible .tol-cat-ico{animation:none}
+}
 #imski .tol-cat-ico{
   width:88px; height:88px; display:block;
   color:#fff;                      /* stroke is currentColor */

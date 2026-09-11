@@ -40,7 +40,7 @@ MENU = "https://menu.lasvegas.treeoflifenv.com/menu"
 # viewBox 0 0 64 64, stroke set by CSS. Drawn to read at 64px and stay legible at 44px.
 ICONS = {
 "flower": """
-<path d="M39.0 41.5 A7.6 7.6 0 0 1 30.7 50.5 A7.6 7.6 0 0 1 18.5 51.0 A7.6 7.6 0 0 1 9.5 42.7 A7.6 7.6 0 0 1 9.0 30.5 A7.6 7.6 0 0 1 17.3 21.5 A7.6 7.6 0 0 1 29.5 21.0 A7.6 7.6 0 0 1 38.5 29.3 A7.6 7.6 0 0 1 39.0 41.5 Z M50.2 49.7 A6.2 6.2 0 0 1 40.3 50.9 A6.2 6.2 0 0 1 33.2 43.9 A6.2 6.2 0 0 1 34.2 34.0 A6.2 6.2 0 0 1 42.6 28.6 A6.2 6.2 0 0 1 52.1 31.8 A6.2 6.2 0 0 1 55.4 41.2 A6.2 6.2 0 0 1 50.2 49.7 Z M34 21 L49 7 M43 12 q5 -4 10 -3.5 M21 31 v4.5 M18.8 33.2 h4.5 M30 45 v3.6 M28.2 46.8 h3.6 M45 35 v3.2 M43.4 36.6 h3.2"/>
+<defs><mask id="tolBud" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><rect x="0" y="0" width="64" height="64" fill="#fff"/><path d="M39.0 41.5 A7.6 7.6 0 0 1 30.7 50.5 A7.6 7.6 0 0 1 18.5 51.0 A7.6 7.6 0 0 1 9.5 42.7 A7.6 7.6 0 0 1 9.0 30.5 A7.6 7.6 0 0 1 17.3 21.5 A7.6 7.6 0 0 1 29.5 21.0 A7.6 7.6 0 0 1 38.5 29.3 A7.6 7.6 0 0 1 39.0 41.5 Z" fill="#000" stroke="#000" stroke-width="3.4"/></mask></defs><g mask="url(#tolBud)"><path d="M50.2 49.7 A6.2 6.2 0 0 1 40.3 50.9 A6.2 6.2 0 0 1 33.2 43.9 A6.2 6.2 0 0 1 34.2 34.0 A6.2 6.2 0 0 1 42.6 28.6 A6.2 6.2 0 0 1 52.1 31.8 A6.2 6.2 0 0 1 55.4 41.2 A6.2 6.2 0 0 1 50.2 49.7 Z"/></g><path d="M39.0 41.5 A7.6 7.6 0 0 1 30.7 50.5 A7.6 7.6 0 0 1 18.5 51.0 A7.6 7.6 0 0 1 9.5 42.7 A7.6 7.6 0 0 1 9.0 30.5 A7.6 7.6 0 0 1 17.3 21.5 A7.6 7.6 0 0 1 29.5 21.0 A7.6 7.6 0 0 1 38.5 29.3 A7.6 7.6 0 0 1 39.0 41.5 Z"/><path d="M34 21 L49 7 M43 12 q5 -4 10 -3.5 M21 31 v4.5 M18.8 33.2 h4.5 M30 45 v3.6 M28.2 46.8 h3.6 M47 36 v3.2 M45.4 37.6 h3.2"/>
 """,
 "pre-rolls": """
 <path d="M6.5 47.5 L43.5 25.5 a4.4 4.4 0 0 1 4.5 7.6 L11 55.1 a4.4 4.4 0 0 1 -4.5 -7.6 Z M40 27.6 l4.5 7.6 M34.6 30.8 l4.5 7.6 M7.6 47 q-2.4 3.4 0 7 M10.5 28.5 L47.5 6.5 a4.4 4.4 0 0 1 4.5 7.6 L15 36.1 a4.4 4.4 0 0 1 -4.5 -7.6 Z M44 8.6 l4.5 7.6 M38.6 11.8 l4.5 7.6 M11.6 28 q-2.4 3.4 0 7"/>
@@ -110,10 +110,25 @@ CSS = """
   display:flex; flex-direction:column; align-items:center; gap:16px;
   padding:10px 6px; border-radius:14px;
   text-decoration:none; color:#fff;
-  transition:transform .16s ease, background-color .16s ease;
+  }
+/* hover = a wiggle on the icon, not a highlight box. focus-visible still needs a persistent
+   indicator, so keyboard focus keeps a ring (an animation is not a focus indicator). */
+@keyframes tol-cat-wiggle{
+  0%,100%{transform:rotate(0deg)}
+  12%{transform:rotate(-10deg)} 28%{transform:rotate(8deg)}
+  44%{transform:rotate(-6deg)}  60%{transform:rotate(4deg)}
+  76%{transform:rotate(-2deg)}  88%{transform:rotate(1deg)}
 }
-#imski .tol-cat-item:hover,
-#imski .tol-cat-item:focus-visible{background:rgba(255,255,255,.10); transform:translateY(-3px)}
+#imski .tol-cat-item:hover .tol-cat-ico,
+#imski .tol-cat-item:focus-visible .tol-cat-ico{
+  animation:tol-cat-wiggle .62s ease-in-out both;
+  transform-origin:50% 62%;
+}
+#imski .tol-cat-item:focus-visible{outline:2px solid #fff; outline-offset:3px}
+@media (prefers-reduced-motion:reduce){
+  #imski .tol-cat-item:hover .tol-cat-ico,
+  #imski .tol-cat-item:focus-visible .tol-cat-ico{animation:none}
+}
 #imski .tol-cat-ico{
   width:88px; height:88px; display:block;
   color:#fff;                      /* stroke is currentColor */
