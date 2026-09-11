@@ -53,10 +53,84 @@ for (const el of all) {
 log.push(`deals: ${all.length} -> kept ${kept} (${removedDup} dup, ${removedTrim} surplus): ${[...seen].slice(0, FEATURED_COUNT).join(', ')}`);
 
 const DEALS_URL = MENU + '/menu/specials';
-$('#i9szc').append(`
-<div class="sgb-component sgb-component-cta tol-deals-viewall" data-tol-added="featured-deals-cta">
-  <a href="${DEALS_URL}" class="btn btn-secondary" aria-label="View all deals">View all deals</a>
+
+// ---------- 2b. DEALS CARDS: image-led card + white text footer ----------
+// Source Deal_N.webp bakes the WHOLE card into a flat 425x498 image ("DAILY DEAL" band,
+// divider, offer, "Shop Now" pill). _tooling/make-deal-tiles.py re-canvases just the offer
+// block onto a 2:1 flat-green tile (Deal_N_wide.webp) so the card can go landscape without
+// cropping or squashing the artwork. Run that script before this one.
+//
+// Footer copy is DERIVED from words printed on each image. Deal_3 prints no product word at
+// all, and Deal_7's only candidate ("EDIBLES") sits in the slot that reads "SELECT BRANDS" on
+// every sibling card, so it may be half a brand name. Naming a product category for either
+// would be an invented claim on a licensed dispensary's public page -> both fall back to the
+// artwork's own "Daily Deal" and are tagged data-tol-tbd for the client.
+const DEAL_COPY = {
+  Deal_1: { cat:'Pre-Rolls', ttl:'5 for $30 &middot; 10 for $50 &mdash; select 1g pre-rolls',
+            alt:'Daily Deal: select brands - 5 for $30 or 10 for $50 on select 1g pre-rolls', gap:null },
+  Deal_2: { cat:'Pre-Rolls', ttl:'4 for $45 &mdash; select pre-rolls',
+            alt:'Daily Deal: select brands - 4 for $45 on select pre-rolls', gap:null },
+  Deal_3: { cat:'Daily Deal', ttl:'1 for $20 &middot; 3 for $55 &middot; 4 for $70',
+            alt:'Daily Deal: 1 for $20, 3 for $55, 4 for $70', gap:'category-not-on-artwork' },
+  Deal_4: { cat:'Rosin', ttl:'2 for $80 &mdash; select 1g rosin',
+            alt:'Daily Deal: select brands - 2 for $80 on select 1g rosin', gap:null },
+  Deal_6: { cat:'Ounces', ttl:'Premium ounces &mdash; $129',
+            alt:'Daily Deal: select brands - premium ounces $129', gap:null },
+  Deal_7: { cat:'Daily Deal', ttl:'3 for $24 &mdash; Sip, Just Edibles, Drink Loud',
+            alt:'Daily Deal: Sip, Just Edibles, Drink Loud - 3 for $24', gap:'brand-vs-category-ambiguous' },
+};
+const PH760 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iMzgwIj48L3N2Zz4=';
+let carded = 0;
+$('#i9szc .gallery-item').each((i, el) => {
+  const key = (imgOf(el).match(/^(Deal_\d+)/) || [])[1];
+  const c = key && DEAL_COPY[key];
+  if (!c) return;
+  const img = $(el).find('img').first();
+  img.attr('data-src', `assets/in-pages/${key}_wide.webp`)
+     .removeAttr('srcset').removeAttr('sizes')
+     .removeAttr('data-img-fallback').removeAttr('onerror')
+     .attr('src', PH760).attr('alt', c.alt)
+     .attr('width', '760').attr('height', '380')
+     .attr('style', 'aspect-ratio:760/380;');
+  const a = $(el).find('a').first();
+  a.attr('aria-label', c.alt).addClass('tol-deal-link');
+  // footer goes INSIDE the <a> so the whole card is the link surface, as in the reference
+  a.append(`<div class="tol-deal-foot"${c.gap ? ` data-tol-tbd="${c.gap}"` : ''}>`
+    + `<span class="tol-deal-cat">${c.cat}</span>`
+    + `<span class="tol-deal-ttl">${c.ttl}</span></div>`);
+  carded++;
+});
+log.push(`deals: ${carded} cards rebuilt image-led (2:1 _wide tile + label/title footer, real alt text)`);
+
+// Carousel: 4-up, loop OFF at root AND in EVERY breakpoint.
+// plugins.min.js pads the DOM with real [data-sg-loop-clone] slides until the count reaches
+// 2*maxSlidesPerView+1 whenever loop is truthy ANYWHERE (its check is an OR-scan over all
+// breakpoints). 6 real deals at 4-up would need 9 -> 3 clones -> visibly duplicated cards,
+// which is the defect recorded in RESULTS.md. Safe rule: 2*maxSlidesPerView+1 <= realSlides.
+const dealsHost = $('#i9szc .gallery-items').first();
+{
+  const bp = spv => ({ slidesPerView: spv, spaceBetween: spv >= 4 ? 25 : (spv >= 3 ? 20 : (spv >= 2 ? 16 : 14)),
+                       navigation: true, pagination: false, loop: false, centeredSlides: false });
+  const cfg = { slidesPerView: 4, navigation: true, pagination: false, loop: false, rewind: false,
+                speed: 500, spaceBetween: 25, centeredSlides: false, watchOverflow: true,
+                autoplay: false,
+                breakpoints: { 0: bp(1), 576: bp(2), 768: bp(3), 992: bp(3), 1200: bp(4) } };
+  dealsHost.attr('data-carousel-options', JSON.stringify(cfg));
+  dealsHost.attr('style', '--items-per-slide:4');
+}
+log.push('deals: carousel -> 4-up, loop FALSE at root + all 5 breakpoints, centeredSlides false');
+
+// Header row: existing heading on the left, chevrons + View-all on the right (reference layout).
+// The shim appends its own .swiper-controls INSIDE the rail, which is overflow:hidden, so the
+// header buttons forward clicks to those (hidden) controls instead of being moved out of it.
+$('#i9szc #izvej').children().wrapAll('<div class="tol-deals-head-l"></div>');
+$('#i9szc #izvej').append(`
+<div class="tol-deals-nav">
+  <button type="button" data-tol-nav="prev" aria-label="Previous deals"></button>
+  <button type="button" data-tol-nav="next" aria-label="Next deals"></button>
+  <a class="tol-deals-viewall-link" href="${DEALS_URL}">View all deals</a>
 </div>`);
+log.push('deals: header row built (heading left, chevrons + View all right); below-rail CTA dropped');
 let repointed = 0;
 $('a[href$="/deals"], a[href="/deals"]').each((i, el) => {
   if (/deal/i.test(($(el).text() || '').trim())) { $(el).attr('href', DEALS_URL); repointed++; }
@@ -512,6 +586,138 @@ log.push('polish: closing CTA text set to readable dark green');
   });
   log.push(`portable: rewrote ${vid} background-video url(s) and ${other} root-absolute asset ref(s) to relative`);
 }
+
+// ---------- 8. DEALS CARD STYLES + HEADER NAV WIRING ----------
+$('body').append(`
+<style id="tol-deals-cards">
+/* ============================================================================
+   DEALS RAIL -> image-led card with a white text footer.
+   Tokens measured off the target rail: card radius 24, 1px #e4e4e4 hairline, NO shadow,
+   2:1 image, 24px footer padding, 16px/24px label + title, label #b42285, title #000.
+   ========================================================================= */
+
+/* -- header row: heading left, chevrons + view-all right ------------------ */
+#i9szc #izvej{
+  display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+  width:calc(100% - 70px); margin:0 35px 22px;
+}
+#i9szc .tol-deals-head-l{min-width:0}
+#i9szc .tol-deals-nav{display:flex; align-items:center; gap:0; flex:0 0 auto; padding-bottom:4px}
+/* 44x44 hit area (WCAG target size) with a 26px optical chevron inside; the centre-to-centre
+   spacing is carried by the boxes themselves rather than a gap. */
+#i9szc .tol-deals-nav button[data-tol-nav]{
+  width:44px; height:44px; padding:0; margin:0; border:0; background:none;
+  cursor:pointer; color:#213c2c; display:inline-flex; align-items:center; justify-content:center;
+  transition:color .15s ease;
+}
+#i9szc .tol-deals-nav button[data-tol-nav]::before{
+  content:""; width:11px; height:11px;
+  border-right:2px solid currentColor; border-bottom:2px solid currentColor;
+}
+#i9szc .tol-deals-nav button[data-tol-nav="prev"]::before{transform:rotate(135deg); margin-left:4px}
+#i9szc .tol-deals-nav button[data-tol-nav="next"]::before{transform:rotate(-45deg); margin-right:4px}
+#i9szc .tol-deals-nav button[aria-disabled="true"]{color:#9aa79f; cursor:default}
+#i9szc .tol-deals-nav .tol-deals-viewall-link{
+  margin-left:22px;
+  font-size:16px; font-weight:500; line-height:1.4; color:#213c2c; text-decoration:none;
+  text-shadow:none; white-space:nowrap;
+  background-image:repeating-linear-gradient(to right, currentColor 0 2px, transparent 2px 4px);
+  background-size:100% 1px; background-repeat:repeat-x; background-position:0 100%;
+  padding-bottom:5px;
+}
+/* the shim appends its own controls inside the rail; we drive them from the header instead */
+#i9szc .gallery-items .swiper-controls{display:none !important}
+
+/* -- rail + card ---------------------------------------------------------- */
+#i9szc .gallery-items .swiper-wrapper{align-items:stretch !important}
+#i9szc .gallery-item{
+  align-items:stretch !important;      /* card is a COLUMN flex box: this is the H axis */
+  justify-content:flex-start !important;
+  padding:0 !important;                /* chrome.css .swiper-slide{padding:5px} */
+  overflow:hidden !important;          /* computed overflow is visible; radius won't clip without it */
+  border-radius:24px;
+  background:#fff;
+  border:1px solid #e4e4e4;
+  box-shadow:none;
+}
+/* LOAD-BEARING. chrome.css sets '.swiper-wrapper>.swiper-slide>*{height:100%}'. Dormant under
+   align-items:center; arms the moment we stretch. Without this the <a> takes the full card height
+   and the footer is pushed out of the card and silently clipped by the overflow:hidden above.
+   Exact precedent: the reviews counter-rule in tol-polish. DO NOT REMOVE. */
+#i9szc .gallery-item > *{height:auto !important}
+
+#i9szc .tol-deal-link{
+  display:flex; flex-direction:column; width:100%; height:100%;
+  text-decoration:none; color:inherit;
+}
+#i9szc .gallery-item .thumb{display:block; width:100%; overflow:hidden; line-height:0}
+#i9szc .gallery-item .thumb img{
+  aspect-ratio:2/1 !important;         /* beats the inline aspect-ratio:425/498 */
+  object-fit:cover !important;         /* computed object-fit is fill -> would squash */
+  width:100% !important; height:auto !important;
+  display:block; border-radius:0; max-width:100%;
+}
+
+/* -- footer --------------------------------------------------------------- */
+#i9szc .tol-deal-foot{
+  display:flex; flex-direction:column; gap:0;
+  padding:24px; background:#fff; flex:1 1 auto;
+}
+#i9szc .tol-deal-foot{text-align:left; align-items:flex-start}
+#i9szc .tol-deal-cat, #i9szc .tol-deal-ttl{text-align:left; width:100%}
+#i9szc .tol-deal-cat{
+  font-size:16px; line-height:24px; font-weight:400; color:#b42285;
+  text-shadow:none !important; letter-spacing:0; text-transform:none;
+}
+#i9szc .tol-deal-ttl{
+  font-size:16px; line-height:24px; font-weight:700; color:#0d0d0d;
+  text-shadow:none !important; letter-spacing:0;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  overflow:hidden; min-height:48px;
+}
+
+@media (max-width:767px){
+  #i9szc #izvej{width:calc(100% - 40px); margin:0 20px 18px; flex-wrap:wrap; gap:12px}
+  #i9szc .tol-deal-foot{padding:18px}
+}
+</style>
+<script id="tol-deals-nav-js">
+/* Forward the header chevrons to the rail's own (hidden) Swiper controls, and mirror their
+   disabled state. Driving Swiper's buttons rather than the instance keeps this working even if
+   the shim re-inits on resize. */
+(function(){
+  var rail = document.getElementById('gallery-items-izxi4');
+  var wrap = document.querySelector('#i9szc .tol-deals-nav');
+  if(!rail || !wrap) return;
+  function target(kind){
+    return rail.querySelector(kind === 'prev' ? '.swiper-button-prev' : '.swiper-button-next');
+  }
+  wrap.querySelectorAll('[data-tol-nav]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var t = target(b.getAttribute('data-tol-nav'));
+      if(t) t.click();
+    });
+  });
+  function sync(){
+    wrap.querySelectorAll('[data-tol-nav]').forEach(function(b){
+      var t = target(b.getAttribute('data-tol-nav'));
+      var off = !t || t.classList.contains('swiper-button-disabled');
+      b.setAttribute('aria-disabled', off ? 'true' : 'false');
+    });
+  }
+  var tries = 0;
+  var iv = setInterval(function(){
+    if(rail.swiper){
+      clearInterval(iv); sync();
+      rail.swiper.on('slideChange', sync);
+      rail.swiper.on('resize', sync);
+      rail.swiper.on('update', sync);
+    } else if(++tries > 100){ clearInterval(iv); }
+  }, 100);
+})();
+</script>
+`);
+log.push('deals: card CSS (tol-deals-cards) + header nav script injected');
 
 fs.writeFileSync(FILE, $.html(), 'utf8');
 console.log('RESTRUCTURE OK -> ' + FILE);
