@@ -1,3 +1,6 @@
 
 # Ace workspace instrumentation - never ship to this public preview repo
 _receipts/
+
+# pre-rebrand backups (local revert only, not shipped)
+*.prebrand
