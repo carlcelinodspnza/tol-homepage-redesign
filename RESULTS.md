@@ -262,3 +262,85 @@ the white plate I had introduced.
   The old app_phone_bg.png was deleted; rebuild.sh updated.
 - Closing CTA link "CALL (702) 536-4200 FOR MORE INFO!": underline removed, weight 700.
   Verified text-decoration-line: none, font-weight: 700.
+
+
+---
+
+# UPDATE 4 — deals rail rebuilt as image-led cards, and two earlier claims corrected
+
+## Two things this document got wrong
+
+**1. The duplicated first slide was NOT "Swiper loop clones".** Lines above state "The 11 DOM
+slides seen at runtime are Swiper loop clones of the 6 real ones, which is the site own behaviour."
+Both halves are false, and it matters, because it frames the rail as untouchable.
+
+Read from `assets/front/js/plugins.min.js` and reproduced on demand: `window.SGPlugins.sgCarousel`
+runs a **custom pre-init DOM padding shim** immediately before `new Swiper()`. If loop is truthy at
+the root **or in any breakpoint** (the check is an OR-scan), it appends **real** cloned nodes marked
+`data-sg-loop-clone="1"` until the wrapper holds `2 * maxSlidesPerView + 1` children. Swiper 11
+loops by rearranging real elements and contributed **0** `.swiper-slide-duplicate` nodes.
+
+    SAFE-LOOP RULE:  2 * maxSlidesPerView + 1  <=  realSlideCount
+
+Measured with the 6 real deals: spv2 needs 5 -> no padding, 0 duplicate frames (safe); spv3 needs 7
+-> 1 clone, 2 broken frames; spv4 needs 9 -> 3 clones, 3 broken frames. Clearing `loop` on the root
+alone is not enough — one leftover `loop:true` in a single breakpoint re-arms padding at every width.
+
+**2. The deals heading is no longer white-on-white.** The "Still genuinely outstanding" section says
+"Shop Our Daily Deals" and "Shop By Category" are "still white-on-white (contrast 1.00)". Measured
+live, that is false for the deals section: `h2#iykyh` computes `rgb(33,54,44)` with `text-shadow:
+none` — the tol-polish block already fixed it. The claim was NOT re-measured for `#imski`, so treat
+that half as unverified rather than true.
+
+## What changed in the deals rail
+
+Rebuilt to match an owner-supplied reference: a 2:1 artwork panel above a white 24px-padded footer
+carrying a magenta category label and a bold title, on a white card with a 1px `#e4e4e4` hairline,
+24px radius and no shadow. No per-card button — the whole card is the link. The carousel controls
+moved out of the rail into the section header row, beside a "View all deals" link.
+
+`_tooling/make-deal-tiles.py` generates `Deal_N_wide.webp`. Each source `Deal_N.webp` bakes the
+entire card into one flat image; profiled identically on all six: "DAILY DEAL" y45-64, divider
+y103-108, offer y133-399, "Shop Now" pill x123-298 / y413-462. The script keeps only the offer block
+and re-canvases it onto a 2:1 tile, padding with the artwork's own flat `rgb(174,208,53)`. Cropping
+the portrait source with `object-fit:cover` would have removed ~63% of its height and lost the price.
+Scale is uniform across all six so the set still reads as one rail. 425px is the largest source
+anywhere in the repo, so the tiles are LANCZOS-upscaled — acceptable only because the artwork is
+flat hard-edged typography.
+
+**One CSS line is load-bearing.** `chrome.css` sets `height:100%` on every direct child of a slide.
+It is dormant while the rail is `align-items:center` and arms the moment it stretches for
+equal-height cards: the `<a>` takes the full card height and the footer is pushed below the card,
+where the `overflow:hidden` added for the radius deletes it silently. `#i9szc .gallery-item > *
+{height:auto !important}` prevents that. Do not remove it as redundant.
+
+**Deliberate behaviour changes.** `autoplay:false` and `rewind:false` — both are required for the
+reference's greyed-out prev arrow, because `rewind:true` never lets Swiper disable the nav buttons.
+The below-rail "View all deals" pill moved into the header row. The h2 and subtitle are unchanged.
+
+## Footer copy: what is derived and what is still a gap
+
+Four labels are derived word-for-word from the artwork: Deal_1 and Deal_2 "Pre-Rolls", Deal_4
+"Rosin", Deal_6 "Ounces". Two are NOT, and ship the artwork's own printed "Daily Deal" with a
+`data-tol-tbd` marker rather than an invented product category:
+
+- **Deal_3** prints three price tiers and **no product word anywhere** on the card.
+- **Deal_7**'s only candidate word sits inside "SIP, JUST EDIBLES, DRINK LOUD", occupying the slot
+  that reads "SELECT BRANDS" on all five sibling cards — so "Edibles" may be half a brand name, not
+  a category. Labelling it as a category could misdescribe a regulated product.
+
+No card in the set contains the word "flower"; "Premium Ounces" states a weight, not a product type.
+Generic `alt="Deal N"` was replaced with a real description on all six.
+
+Still needed from the client: what product Deal_3 is; whether Deal_7's band is three brand names or
+a slogan; whether Deal_6's $129 is per ounce or a bundle; and six per-offer URLs (all six cards
+currently share one href).
+
+## Verified at 1440 / 768 / 375
+
+Card 323.8x282.9 against the reference's 321.25x282.7. Image ratio exactly 2.0 with object-fit cover.
+All 6 footers full-bleed, card heights equal, image-top spread 0. Contrast 5.99 (label) and 19.44
+(title) against white. Nav targets 44x44. 6 DOM slides and 0 clones at every width, 0 duplicate
+frames across a full cycle, all six deals reachable. No horizontal overflow. No new console errors —
+the remaining ones are the pre-existing seogstage TLS failures and the cart CORS block, both of
+which reproduce identically on the original deployment.
