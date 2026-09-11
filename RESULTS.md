@@ -303,7 +303,8 @@ moved out of the rail into the section header row, beside a "View all deals" lin
 entire card into one flat image; profiled identically on all six: "DAILY DEAL" y45-64, divider
 y103-108, offer y133-399, "Shop Now" pill x123-298 / y413-462. The script keeps only the offer block
 and re-canvases it onto a 2:1 tile, padding with the artwork's own flat `rgb(174,208,53)`. Cropping
-the portrait source with `object-fit:cover` would have removed ~63% of its height and lost the price.
+the portrait source with `object-fit:cover` would have removed 57% of its height and lost the price
+(cover scale 0.757 on 425x498 into the measured 321.8x160.9 box leaves 42.7% visible).
 Scale is uniform across all six so the set still reads as one rail. 425px is the largest source
 anywhere in the repo, so the tiles are LANCZOS-upscaled — acceptable only because the artwork is
 flat hard-edged typography.

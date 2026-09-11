@@ -58,7 +58,8 @@ const DEALS_URL = MENU + '/menu/specials';
 // Source Deal_N.webp bakes the WHOLE card into a flat 425x498 image ("DAILY DEAL" band,
 // divider, offer, "Shop Now" pill). _tooling/make-deal-tiles.py re-canvases just the offer
 // block onto a 2:1 flat-green tile (Deal_N_wide.webp) so the card can go landscape without
-// cropping or squashing the artwork. Run that script before this one.
+// cropping or squashing the artwork (cover on the portrait source would discard 57% of its
+// height at our 2:1 box). Run that script before this one.
 //
 // Footer copy is DERIVED from words printed on each image. Deal_3 prints no product word at
 // all, and Deal_7's only candidate ("EDIBLES") sits in the slot that reads "SELECT BRANDS" on

@@ -19,7 +19,8 @@ The field is a single flat colour, rgb(174,208,53), so re-canvassing to any aspe
 seamless: we PAD with that exact colour instead of cropping or stretching the offer.
 
 This is what lets the card go landscape without damage. Forcing the portrait source into a
-2:1 box with object-fit:cover would crop ~63% of its height and cut the price off; with
+2:1 box with object-fit:cover would crop 57% of its height and cut the price off (measured:
+cover scale 0.757 on a 425x498 source into the 321.8x160.9 render box leaves 42.7% visible); with
 object-fit:fill it would squash. Padding a flat field does neither.
 
 Scaling is UNIFORM across all six tiles, deliberately. Fitting each offer block to the tile
