@@ -253,9 +253,9 @@ log.push('categories: band CSS (tol-cat-band) injected');
     img.attr('data-src', 'assets/in-pages/rewards_app_phone_mockup.webp')
        .removeAttr('srcset').removeAttr('sizes')
        .removeAttr('data-img-fallback').removeAttr('onerror')
-       .attr('src', 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjEzMzQiPjwvc3ZnPg==')
-       .attr('alt', ALT).attr('width', '1200').attr('height', '1334')
-       .attr('style', 'aspect-ratio:1200/1334;');
+       .attr('src', 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAwIiBoZWlnaHQ9IjE2MDAiPjwvc3ZnPg==')
+       .attr('alt', ALT).attr('width', '1600').attr('height', '1600')
+       .attr('style', 'aspect-ratio:1/1;');
     log.push('rewards: phone mockup swapped in (site mobile view on screen) + real alt text');
   }
 }
@@ -769,6 +769,30 @@ $('body').append(`
 </script>
 `);
 log.push('deals: card CSS (tol-deals-cards) + header nav script injected');
+
+// ---------- 9. REWARDS IMAGE BLEED ----------
+$('body').append(`
+<style id="tol-rewards-bleed">
+/* The rewards image is a hand whose arm runs off the bottom-right of the artwork. Inside the
+   centred .container it stopped short of the viewport and read as a floating cut-out, so the
+   image cell is pulled out to the right edge of the screen and the arm runs off it.
+
+   calc(50% - 50vw): the 50% resolves against the row's width, so this equals
+   -(viewport - container)/2 - exactly the gutter between the container edge and the screen edge.
+   Only from 992px up; below that the layout is stacked and a bleed would just crop the phone. */
+@media (min-width:992px){
+  /* the cell also carries 25px of its own padding, which held the artwork 25px short of
+     the screen edge even after the negative margin landed correctly */
+  #ir16v #i7sp5{ margin-right:calc(50% - 50vw) !important; padding-right:0 !important; }
+  #ir16v #ilkzg{ width:100% !important; max-width:none !important; }
+  #ir16v #ilkzg img{ width:100% !important; max-width:none !important; height:auto !important; }
+}
+/* the section spans the viewport, so this cannot clip the bleed - it only stops the negative
+   margin from becoming a horizontal scrollbar if a browser rounds the calc up a pixel */
+#ir16v{ overflow-x:clip; }
+</style>
+`);
+log.push('rewards: image cell bleeds to the right viewport edge >=992px');
 
 fs.writeFileSync(FILE, $.html(), 'utf8');
 console.log('RESTRUCTURE OK -> ' + FILE);
