@@ -3,7 +3,10 @@
 A working preview of the proposed homepage restructure for Tree of Life Dispensary (Las Vegas),
 built from a clone of the staging site so the real header, footer, chrome and video hero are intact.
 
-**Live preview:** see the GitHub Pages URL in the repository's About panel.
+**Live preview:** https://carlcelinodspnza.github.io/tol-homepage-redesign/
+
+> Working fork of `nicoledreo/tol-homepage-redesign`, maintained at `carlcelinodspnza`.
+> Updates are published from here. Upstream is tracked as the `upstream` remote (fetch-only).
 
 ---
 
