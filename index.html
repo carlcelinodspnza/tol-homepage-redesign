@@ -600,6 +600,29 @@
   #imski .tol-cat-ico{width:60px; height:60px}
   #imski .tol-cat-label{font-size:14px}
 }
+
+/* Heading tied to the band it introduces (owner request 2026-09-15).
+
+   COLOUR: the owner sampled #53a756 off a screenshot, but the band's RENDERED background is
+   rgb(38,169,75) = #26a94b (measured in-page: opacity 1, no filter, no gradient). The sample is a
+   colour-managed capture shift - the green channel matches (167 vs 169) while red/blue lift. The
+   ask was "same colour as the section background", so the heading takes the band's REAL value;
+   the sampled hex would have read as a different, duller green sitting right above the band.
+
+   SPECIFICITY (this is why the obvious rule silently failed): the brand-recolour pass in
+   #tol-polish ships `#imski h1,#imski h2,... { color:var(--tol-ink) !important }`. #idtah is a
+   child of #imski, so that rule is (1,0,1) + !important. A plain `#idtah{color:...}` is (1,0,0)
+   and lost SILENTLY - it parsed, it matched, and it still never painted. Even an inline
+   style attribute lost to it. So this rule needs BOTH !important and higher specificity:
+   `#imski h2#idtah` is (2,0,1) and wins outright. Verified by computed style, not by reading.
+
+   SCOPE: #idtah only. The sibling h2 #iykyh ("Shop Our Daily Deals") was not part of the request
+   and deliberately stays var(--tol-ink).
+
+   CONTRAST: 3.06:1 on the white ground. The heading is 46px/700, which is WCAG "large text"
+   (>=18.66px bold) where AA is 3.0:1 - so it passes, but by 0.06. It does NOT meet the 4.5:1
+   normal-text bar and must not be reused at body size. */
+#imski h2#idtah{ color:#26a94b !important; }
 </style>
 
 <style id="tol-brand-fixes">
